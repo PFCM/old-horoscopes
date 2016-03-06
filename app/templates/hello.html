@@ -11,43 +11,55 @@
 
     <!-- mdl css -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
-    <link rel="stylesheet" href="https://code.getmdl.io/1.1.2/material.grey-blue.min.css"/>
+    <link rel="stylesheet" href="https://code.getmdl.io/1.1.2/material.blue_grey-blue.min.css"/>
     <!-- mdl js -->
     <script defer src="https://code.getmdl.io/1.1.2/material.min.js"></script>
     <!-- jquery -->
-    <script defer src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-  </head>
-  <body>
-    <div class="container">
-        <div class="card-wide mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title">
-                <h2 class="mdl-card__title-text">
-                    Hello
-                </h2>
-            </div>
-            <div class="mdl-card__supporting-text">
-                This is a text!
-            </div>
-            <div class="mdl-card__actions mdl-card--border">
-                <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-                    Do a thing
-                </a>
-            </div>
-        </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+    <!-- actual css -->
+    <link rel="stylesheet" href="/static/css/horocards.css"/>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var dialog = $('dialog')[0];
+            $('.close').click(function() {
+                var birth_day = $('#dob-day').val();
+                var birth_month = $('#dob-month').val();
+                var birth_year = $('#dob-year').val();
+                var horo_date = new Date();
+                var starsign = 'cancer';
+
+                var offsets = [7, 31, 365, 3650];
+                var cards = $('.mdl-card__supporting-text');
+                console.log(cards);
+
+                var updateCard = function(card, date, sign) {
+                    $.ajax({
+                        url: "http://widgets.fabulously40.com/horoscope.json?sign="+sign+"&date="+date,
+                    })
+                        .done(function(data) {
+                            $(card).text(data['horoscope']['horoscope']);
+                        })
+                        .fail(function(data) {
+                            $(card).html('error :(');
+                        });
+                }
+
+                offsets.map(function(e, i) {
+                    return [offsets[i], cards[i]]
+                })
+                    .forEach(function(data) {
+                        var date = new Date(horo_date.getDate() - data[0]);
+                        date = date.toJSON().slice(0,10);
+                        updateCard(data[1], date, starsign);
+                    });
 
 
-      <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
-          Hello!
-      </button>
-    </div>
-
-    <footer class="footer">
-      <p>&copy; no one</p>
-    </footer>
-
-
-    <!-- bootstrap.js -->
-    <script src="/static/js/bootstrap.min.js"></script>
+                dialog.close();
+            });
+            dialog.showModal();
+        });
+    </script>
     <script type="text/javascript">
       $(document).ready(function() {
         $("#dob-prompt").on("hide.bs.modal", function(e) {
@@ -72,6 +84,151 @@
         })
       });
     </script>
-  </body>
+  </head>
+  <body>
+    <!-- the dialog that kicks us off -->
+    <dialog class="mdl-dialog">
+        <h4 class="mdl-dialog__title">Enter your date of birth.</h4>
+        <div class="mdl-dialog__content">
+            <form action="#">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" pattern="[0-9]{1,2}" id=dob-day>
+                    <label class="mdl-textfield__label" for=dob-day>Day...</label>
+                    <span class="mdl-textfield__error">Input is not a valid day (number)!</span>
+                </div>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" pattern="[01]?[0-9]" id=dob-month>
+                    <label class="mdl-textfield__label" for=dob-day>Month...</label>
+                    <span class="mdl-textfield__error">Input is not a valid month (number)!</span>
+                </div>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" pattern="[12][0-9]{3}" id=dob-month>
+                    <label class="mdl-textfield__label" for=dob-day>Year...</label>
+                    <span class="mdl-textfield__error">Input is not a valid year (number)!</span>
+                </div>
+            </form>
+        </div>
+        <div class="mdl-dialog__actions">
+            <button type="button" class="mdl-button close">Ok.</button>
+        </div>
+    </dialog>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+        <header class="mdl-layout__header">
+            <div class="mdl-layout__header-row">
+                <!-- Title -->
+                <span class="mdl-layout-title">Hello</span>
+                <!-- spacer to right align nav -->
+                <div class="mdl-layout-spacer"></div>
+                <!-- nav, hidden for smaller screens -->
+                <nav class="mdl-navigation mdl-layout--large-screen-only">
+                    <a class="mdl-navigation__link" href="/">Home</a>
+                    <a class="mdl-navigation__link" href="/about">About</a>
+                    <a class="mdl-navigation__link" href="/contact">Contact</a>
+                </nav>
+            </div>
+        </header>
+        <div class="mdl-layout__drawer">
+            <span class="mdl-layout-title">Title</span>
+            <nav class="mdl-navigation">
+                <a class="mdl-navigation__link" href="/">Home</a>
+                <a class="mdl-navigation__link" href="/about">About</a>
+                <a class="mdl-navigation__link" href="/contact">Contact</a>
+            </nav>
+        </div>
 
+        <div class="floater">
+            <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored float-action-button mdl-js-ripple-effect">
+                <i class="material-icons">redo</i>
+            </button>
+        </div>
+        <main class="mdl-layout__content">
+            <div class="page-content mdl-grid">
+                <div class="mdl-cell mdl-cell--6-col">
+                    <!-- week old horoscope card -->
+                    <div class="week-card horoscope-card mdl-card mdl-shadow--2dp">
+                        <div class="mdl-card__title">
+                            <h2 class="mdl-card__title-text">A week ago:</h2>
+                        </div>
+                        <div class="mdl-card__supporting-text">
+                            <!-- some kind of loading animation -->
+                            <div id="p_week" class="mdl-spinner mdl-js-spinner mdl-spinner--single-color is-active center-spinner"></div>
+                            <!-- actual text -->
+
+                        </div>
+                        <div class="mdl-card__menu">
+                            <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+                                <i class="material-icons">share</i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="mdl-cell mdl-cell--6-col">
+                    <!-- month old horoscope card -->
+                    <div class="month-card horoscope-card mdl-card mdl-shadow--2dp">
+                        <div class="mdl-card__title">
+                            <h2 class="mdl-card__title-text">A month ago:</h2>
+                        </div>
+                        <div class="mdl-card__supporting-text">
+                            <!-- some kind of loading animation -->
+                            <div id="p_month" class="mdl-spinner mdl-js-spinner mdl-spinner--single-color is-active center-spinner"></div>
+                            <!-- actual text -->
+                        </div>
+                        <div class="mdl-card__menu">
+                            <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+                                <i class="material-icons">share</i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mdl-cell mdl-cell--6-col">
+                    <!-- week old horoscope card -->
+                    <div class="year-card horoscope-card mdl-card mdl-shadow--2dp">
+                        <div class="mdl-card__title">
+                            <h2 class="mdl-card__title-text">A year ago:</h2>
+                        </div>
+                        <div class="mdl-card__supporting-text">
+                            <!-- some kind of loading animation -->
+                            <div id="p_year" class="mdl-spinner mdl-js-spinner mdl-spinner--single-color is-active center-spinner"></div>
+                            <!-- actual text -->
+
+                        </div>
+                        <div class="mdl-card__menu">
+                            <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+                                <i class="material-icons">share</i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="mdl-cell mdl-cell--6-col">
+                    <!-- month old horoscope card -->
+                    <div class="decade-card horoscope-card mdl-card mdl-shadow--2dp">
+                        <div class="mdl-card__title">
+                            <h2 class="mdl-card__title-text">A decade ago:</h2>
+                        </div>
+                        <div class="mdl-card__supporting-text">
+                            <!-- some kind of loading animation -->
+                            <div id="p_week" class="mdl-spinner mdl-js-spinner mdl-spinner--single-color is-active center-spinner"></div>
+                            <!-- actual text goes here -->
+                        </div>
+                        <div class="mdl-card__menu">
+                            <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+                                <i class="material-icons">share</i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="mdl-mini-footer">
+                <!--
+                <div class="mdl-mini-footer__left-section">
+                </div>
+                -->
+                <div class="mdl-mini-footer__right-section">
+                    <p>&copy; no one</p>
+                </div>
+            </footer>
+        </main>
+    </div>
+  </body>
 </html>

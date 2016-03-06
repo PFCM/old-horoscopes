@@ -1,0 +1,44 @@
+.page-content.mdl-grid {
+    max-width: 720px;
+}
+
+.horoscope-card > .mdl-card__title {
+    height: 76px;
+    color: #F5F5F5;
+    background: #727272;
+}
+
+.week-card > .mdl-card__title {
+    background: #536dfe;
+}
+
+.year-card > .mdl-card__title {
+    background: #607d8b;
+}
+
+.decade-card > .mdl-card__title {
+    background: #212121;
+}
+
+.decade-card > .mdl-card__menu {
+    color: #F5F5F5;
+}
+
+.float-action-button {
+}
+
+.floater {
+    position: fixed;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    right: 50px;
+    bottom: 50px;
+    z-index: 1000;
+}
+
+/*.center-spinner {
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}*/
