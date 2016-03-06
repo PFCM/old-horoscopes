@@ -9,48 +9,36 @@
 
     <title>HELLO FLASK!</title>
 
-    <!-- Bootstrap css -->
-    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!-- mdl css -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+    <link rel="stylesheet" href="https://code.getmdl.io/1.1.2/material.grey-blue.min.css"/>
+    <!-- mdl js -->
+    <script defer src="https://code.getmdl.io/1.1.2/material.min.js"></script>
+    <!-- jquery -->
+    <script defer src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   </head>
   <body>
     <div class="container">
-      <div class="header">
-        <nav>
-          <ul class="nav nav-pills pull-right">
-            <li role="presentation" class="active"><a href="#">Home</a></li>
-            <li role="presentation"><a href="#">About</a></li>
-            <li role="presentation"><a href="#">Contact</a></li>
-          </ul>
-        </nav>
-        <h3 class="text-muted">Horoscoped</h3>
-      </div>
-
-      <div class="jumbotron" id="init">
-        <h1>Ready?</h1>
-        <p class="lead">First we need your birthday</p>
-        <p><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#dob-prompt">Ok!</button></p>
-      </div>
-
-      <div class="jumbotron" id="content" style="display:none;">
-        <p class="lead">Loading...</p>
-      </div>
-
-    <!-- Modal -->
-    <div class="modal fade" id="dob-prompt" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="myModalLabel">When were you born</h4>
-          </div>
-          <div class="modal-body">
-              <input type="date">
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Go</button>
-          </div>
+        <div class="card-wide mdl-card mdl-shadow--2dp">
+            <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">
+                    Hello
+                </h2>
+            </div>
+            <div class="mdl-card__supporting-text">
+                This is a text!
+            </div>
+            <div class="mdl-card__actions mdl-card--border">
+                <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                    Do a thing
+                </a>
+            </div>
         </div>
-      </div>
+
+
+      <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+          Hello!
+      </button>
     </div>
 
     <footer class="footer">
@@ -59,7 +47,6 @@
 
 
     <!-- bootstrap.js -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="/static/js/bootstrap.min.js"></script>
     <script type="text/javascript">
       $(document).ready(function() {
