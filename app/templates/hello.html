@@ -7,7 +7,7 @@
     <meta name="author" content="pfcm">
     <link rel="icon" href="../../favicon.ico">
 
-    <title>HELLO FLASK!</title>
+    <title>horororoscopies</title>
 
     <!-- mdl css -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
@@ -22,6 +22,12 @@
     <script type="text/javascript">
         $(document).ready(function() {
             var dialog = $('dialog')[0];
+
+            $('.float-action-button').click(function() {
+                $('.mdl-spinner').show();
+                $('.mdl-card__supporting-text').children('p').hide();
+                dialog.showModal();
+            });
             $('.close').click(function() {
                 var birth_day = $('#dob-day').val();
                 var birth_month = $('#dob-month').val();
@@ -38,10 +44,12 @@
                         url: "http://widgets.fabulously40.com/horoscope.json?sign="+sign+"&date="+date,
                     })
                         .done(function(data) {
-                            $(card).text(data['horoscope']['horoscope']);
+                            $(card).children('.mdl-spinner').hide();
+                            $(card).children('p').text(data['horoscope']['horoscope']).show();
                         })
                         .fail(function(data) {
-                            $(card).html('error :(');
+                            $(card).children('.mdl-spinner').hide();
+                            $(card).children('p').text('error :(').show();
                         });
                 }
 
@@ -59,30 +67,6 @@
             });
             dialog.showModal();
         });
-    </script>
-    <script type="text/javascript">
-      $(document).ready(function() {
-        $("#dob-prompt").on("hide.bs.modal", function(e) {
-          $(".jumbotron#init").hide();
-          $(".jumbotron#content").show();
-          var birth_date = $(".modal-body input[type=date]").val();
-          var horo_date = new Date();
-          horo_date.setDate(horo_date.getDate() - 7);
-          horo_date = horo_date.toJSON().slice(0,10);
-          var sign = "cancer";
-          console.log(horo_date);
-          $.ajax({
-            url: "http://widgets.fabulously40.com/horoscope.json?sign=" + sign + "&date=" + horo_date,
-            crossDomain : true
-          })
-            .done(function(data) {
-              $(".jumbotron#content p.lead").text(data['horoscope']['horoscope']);
-            })
-            .fail(function(xhr, status, error) {
-              $(".jumbotron#content p.lead").html("<h3>Error: " + status + "</h3><p>" + error + "</p>");
-            });
-        })
-      });
     </script>
   </head>
   <body>
@@ -153,7 +137,7 @@
                             <!-- some kind of loading animation -->
                             <div id="p_week" class="mdl-spinner mdl-js-spinner mdl-spinner--single-color is-active center-spinner"></div>
                             <!-- actual text -->
-
+                            <p></p>
                         </div>
                         <div class="mdl-card__menu">
                             <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
@@ -172,6 +156,7 @@
                             <!-- some kind of loading animation -->
                             <div id="p_month" class="mdl-spinner mdl-js-spinner mdl-spinner--single-color is-active center-spinner"></div>
                             <!-- actual text -->
+                            <p></p>
                         </div>
                         <div class="mdl-card__menu">
                             <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
@@ -191,7 +176,7 @@
                             <!-- some kind of loading animation -->
                             <div id="p_year" class="mdl-spinner mdl-js-spinner mdl-spinner--single-color is-active center-spinner"></div>
                             <!-- actual text -->
-
+                            <p></p>
                         </div>
                         <div class="mdl-card__menu">
                             <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
@@ -210,6 +195,7 @@
                             <!-- some kind of loading animation -->
                             <div id="p_week" class="mdl-spinner mdl-js-spinner mdl-spinner--single-color is-active center-spinner"></div>
                             <!-- actual text goes here -->
+                            <p></p>
                         </div>
                         <div class="mdl-card__menu">
                             <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
