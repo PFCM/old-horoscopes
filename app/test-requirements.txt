@@ -1,0 +1,5 @@
+# requirements for the tests
+# separate from the normal requirements, because you may not need them
+# installed with:
+#   % pip install -r test-requirements.txt
+nose
