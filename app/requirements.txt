@@ -1,0 +1,5 @@
+# these are the requirementsa for this project
+# install them with:
+#   % pip install -r requirements.txt
+uwsgi
+flask
