@@ -60,3 +60,9 @@ target/
 
 #Ipython Notebook
 .ipynb_checkpoints
+
+# local python version stuff
+.pyenv
+
+# OS stuff
+.DS_Store
