@@ -11,8 +11,6 @@
 
     <!-- Bootstrap css -->
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
-    <!-- other css -->
-    <link href="jumbotron-narrow.css" rel="stylesheet">
   </head>
   <body>
     <div class="container">
@@ -27,16 +25,66 @@
         <h3 class="text-muted">Horoscoped</h3>
       </div>
 
-      <div class="jumbotron">
-        <h1>Hello, flask</h1>
-        <p class="lead">This is a text</p>
-        <p><a class="btn btn-lg btn-success" href="#" role="button">OK!</a></p>
+      <div class="jumbotron" id="init">
+        <h1>Ready?</h1>
+        <p class="lead">First we need your birthday</p>
+        <p><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#dob-prompt">Ok!</button></p>
+      </div>
+
+      <div class="jumbotron" id="content" style="display:none;">
+        <p class="lead">Loading...</p>
+      </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="dob-prompt" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">When were you born</h4>
+          </div>
+          <div class="modal-body">
+              <input type="date">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Go</button>
+          </div>
+        </div>
       </div>
     </div>
 
     <footer class="footer">
       <p>&copy; no one</p>
     </footer>
+
+
+    <!-- bootstrap.js -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $("#dob-prompt").on("hide.bs.modal", function(e) {
+          $(".jumbotron#init").hide();
+          $(".jumbotron#content").show();
+          var birth_date = $(".modal-body input[type=date]").val();
+          var horo_date = new Date();
+          horo_date.setDate(horo_date.getDate() - 7);
+          horo_date = horo_date.toJSON().slice(0,10);
+          var sign = "cancer";
+          console.log(horo_date);
+          $.ajax({
+            url: "http://widgets.fabulously40.com/horoscope.json?sign=" + sign + "&date=" + horo_date,
+            crossDomain : true
+          })
+            .done(function(data) {
+              $(".jumbotron#content p.lead").text(data['horoscope']['horoscope']);
+            })
+            .fail(function(xhr, status, error) {
+              $(".jumbotron#content p.lead").html("<h3>Error: " + status + "</h3><p>" + error + "</p>");
+            });
+        })
+      });
+    </script>
   </body>
 
 </html>
