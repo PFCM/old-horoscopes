@@ -107,6 +107,9 @@ def get_starsign():
     # print(page_data)
     sign = re.search('<tr><th>Zodiac Sign</th><td><strong>(.*)</strong>',
                      page_data).group(1).strip()
+    # fix for one weird case
+    if sign.endswith('_'):
+        sign = sign[0:-1]
     stone = re.search('<tr><th>Birth Stone</th><td>(.*)</td>',
                       page_data).group(1).strip()
     flower = re.search('<tr><th>Birth Flower</th><td>(.*)</td>',
