@@ -1,0 +1,24 @@
+language: python
+python:
+  - "3.4"
+  - "3.5"
+
+sudo: required
+services:
+  - docker
+
+install:
+  - "pip install --user -r app/requirements.txt"
+  - "pip install --user -r app/test-requirements.txt"
+
+script: "nosetests app/"
+
+deploy:
+  provider: script
+  script: docker_push.sh
+  on:
+    branch: master
+
+notifications:
+  email:
+    on_failure: change
