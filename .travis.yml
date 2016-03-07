@@ -8,8 +8,8 @@ services:
   - docker
 
 install:
-  - "pip install --user -r app/requirements.txt"
-  - "pip install --user -r app/test-requirements.txt"
+  - "pip install -r app/requirements.txt"
+  - "pip install -r app/test-requirements.txt"
 
 script: "nosetests app/"
 
