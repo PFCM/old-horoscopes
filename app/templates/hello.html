@@ -32,38 +32,61 @@
                 var birth_day = $('#dob-day').val();
                 var birth_month = $('#dob-month').val();
                 var birth_year = $('#dob-year').val();
-                var horo_date = new Date();
-                var starsign = 'cancer';
+                $.ajax({ // get the starsign first
+                  url: "{{ starsign_url }}?date="+birth_year+"-"+birth_month+"-"+birth_day,
+                }).done(function(data, status, jqXHR) {
+                  var starsign = data.sign;
 
-                var offsets = [7, 31, 365, 3650];
-                var cards = $('.mdl-card__supporting-text');
-                console.log(cards);
+                  $('span.starsign-name').text(data.sign);
+                  $('span.starsign-stone').text(data.stone);
+                  $('span.starsign-flower').text(data.flower);
+                  $('span.starsign-planet').text(data.planet);
+                  $('span.starsign-color').text(data.color);
+                  $('span.starsign-element').text(data.element);
+                  var icon = 'whatshot';
+                  if (data.element == 'Water') {
+                    icon = 'opacity';
+                  } else if (data.element == 'Air') {
+                    icon = 'toys';
+                  } else if (data.element == 'Earth') {
+                    icon = 'landscape';
+                  }
+                  $('.element-icon').text(icon);
 
-                var updateCard = function(card, date, sign) {
-                    $.ajax({
-                        url: "http://widgets.fabulously40.com/horoscope.json?sign="+sign+"&date="+date,
-                    })
-                        .done(function(data) {
-                            $(card).children('.mdl-spinner').hide();
-                            $(card).children('p').text(data['horoscope']['horoscope']).show();
-                        })
-                        .fail(function(data) {
-                            $(card).children('.mdl-spinner').hide();
-                            $(card).children('p').text('error :(').show();
-                        });
-                }
+                  $('span.mdl-layout-title').text(starsign);
 
-                offsets.map(function(e, i) {
-                    return [offsets[i], cards[i]]
-                })
-                    .forEach(function(data) {
-                        var date = new Date(horo_date.getDate() - data[0]);
-                        date = date.toJSON().slice(0,10);
-                        updateCard(data[1], date, starsign);
-                    });
+                  var offsets = [604800000, 2678400000, 16070400000, 31536000000];
+                  var cards = $('.mdl-card__supporting-text');
+                  console.log(cards);
+
+                  var updateCard = function(card, date, sign) {
+                      $.ajax({
+                          url: "{{ horoscope_url }}?sign="+sign+"&date="+date,
+                      })
+                          .done(function(data, status, jqXHR) {
+                            console.log(data);
+                              $(card).children('.mdl-spinner').hide();
+                              $(card).children('p').text(data.horoscope).show();
+                          })
+                          .fail(function(jqXHR, status, error) {
+                            console.log(error);
+                              $(card).children('.mdl-spinner').hide();
+                              $(card).children('p').text('error :(').show();
+                          });
+                  }
+
+                  offsets.map(function(e, i) {
+                      return [offsets[i], cards[i]]
+                  })
+                      .forEach(function(data) {
+                          var date = new Date(Date.now() - data[0]);
+                          date = date.toJSON().slice(0,10);
+                          updateCard(data[1], date, starsign);
+                      });
 
 
-                dialog.close();
+                  dialog.close();
+              });
             });
             dialog.showModal();
         });
@@ -82,12 +105,12 @@
                 </div>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input class="mdl-textfield__input" type="text" pattern="[01]?[0-9]" id=dob-month>
-                    <label class="mdl-textfield__label" for=dob-day>Month...</label>
+                    <label class="mdl-textfield__label" for=dob-month>Month...</label>
                     <span class="mdl-textfield__error">Input is not a valid month (number)!</span>
                 </div>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input class="mdl-textfield__input" type="text" pattern="[12][0-9]{3}" id=dob-month>
-                    <label class="mdl-textfield__label" for=dob-day>Year...</label>
+                    <input class="mdl-textfield__input" type="text" pattern="[12][0-9]{3}" id=dob-year>
+                    <label class="mdl-textfield__label" for=dob-year>Year...</label>
                     <span class="mdl-textfield__error">Input is not a valid year (number)!</span>
                 </div>
             </form>
@@ -126,94 +149,178 @@
             </button>
         </div>
         <main class="mdl-layout__content">
-            <div class="page-content mdl-grid">
-                <div class="mdl-cell mdl-cell--6-col">
-                    <!-- week old horoscope card -->
-                    <div class="week-card horoscope-card mdl-card mdl-shadow--2dp">
-                        <div class="mdl-card__title">
-                            <h2 class="mdl-card__title-text">A week ago:</h2>
-                        </div>
-                        <div class="mdl-card__supporting-text">
-                            <!-- some kind of loading animation -->
-                            <div id="p_week" class="mdl-spinner mdl-js-spinner mdl-spinner--single-color is-active center-spinner"></div>
-                            <!-- actual text -->
-                            <p></p>
-                        </div>
-                        <div class="mdl-card__menu">
-                            <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-                                <i class="material-icons">share</i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="mdl-cell mdl-cell--6-col">
-                    <!-- month old horoscope card -->
-                    <div class="month-card horoscope-card mdl-card mdl-shadow--2dp">
-                        <div class="mdl-card__title">
-                            <h2 class="mdl-card__title-text">A month ago:</h2>
-                        </div>
-                        <div class="mdl-card__supporting-text">
-                            <!-- some kind of loading animation -->
-                            <div id="p_month" class="mdl-spinner mdl-js-spinner mdl-spinner--single-color is-active center-spinner"></div>
-                            <!-- actual text -->
-                            <p></p>
-                        </div>
-                        <div class="mdl-card__menu">
-                            <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-                                <i class="material-icons">share</i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mdl-cell mdl-cell--6-col">
-                    <!-- week old horoscope card -->
-                    <div class="year-card horoscope-card mdl-card mdl-shadow--2dp">
-                        <div class="mdl-card__title">
-                            <h2 class="mdl-card__title-text">A year ago:</h2>
-                        </div>
-                        <div class="mdl-card__supporting-text">
-                            <!-- some kind of loading animation -->
-                            <div id="p_year" class="mdl-spinner mdl-js-spinner mdl-spinner--single-color is-active center-spinner"></div>
-                            <!-- actual text -->
-                            <p></p>
-                        </div>
-                        <div class="mdl-card__menu">
-                            <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-                                <i class="material-icons">share</i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="mdl-cell mdl-cell--6-col">
-                    <!-- month old horoscope card -->
-                    <div class="decade-card horoscope-card mdl-card mdl-shadow--2dp">
-                        <div class="mdl-card__title">
-                            <h2 class="mdl-card__title-text">A decade ago:</h2>
-                        </div>
-                        <div class="mdl-card__supporting-text">
-                            <!-- some kind of loading animation -->
-                            <div id="p_week" class="mdl-spinner mdl-js-spinner mdl-spinner--single-color is-active center-spinner"></div>
-                            <!-- actual text goes here -->
-                            <p></p>
-                        </div>
-                        <div class="mdl-card__menu">
-                            <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-                                <i class="material-icons">share</i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+          <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+            <div class="mdl-tabs__tab-bar">
+              <a href="#horoscopes-panel" class="mdl-tabs__tab is-active">Horoscopes</a>
+              <a href="#starsign-panel" class="mdl-tabs__tab">Sign</a>
             </div>
-            <footer class="mdl-mini-footer">
-                <!--
-                <div class="mdl-mini-footer__left-section">
+            <div class="mdl-tabs__panel is-active" id="horoscopes-panel">
+              <div class="page-content mdl-grid">
+                  <div class="mdl-cell mdl-cell--6-col">
+                      <!-- week old horoscope card -->
+                      <div class="week-card horoscope-card mdl-card mdl-shadow--2dp">
+                          <div class="mdl-card__title">
+                              <h2 class="mdl-card__title-text">A week ago:</h2>
+                          </div>
+                          <div class="mdl-card__supporting-text">
+                              <!-- some kind of loading animation -->
+                              <div id="p_week" class="mdl-spinner mdl-js-spinner mdl-spinner--single-color is-active center-spinner"></div>
+                              <!-- actual text -->
+                              <p></p>
+                          </div>
+                          <div class="mdl-card__menu">
+                              <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+                                  <i class="material-icons">share</i>
+                              </button>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="mdl-cell mdl-cell--6-col">
+                      <!-- month old horoscope card -->
+                      <div class="month-card horoscope-card mdl-card mdl-shadow--2dp">
+                          <div class="mdl-card__title">
+                              <h2 class="mdl-card__title-text">A month ago:</h2>
+                          </div>
+                          <div class="mdl-card__supporting-text">
+                              <!-- some kind of loading animation -->
+                              <div id="p_month" class="mdl-spinner mdl-js-spinner mdl-spinner--single-color is-active center-spinner"></div>
+                              <!-- actual text -->
+                              <p></p>
+                          </div>
+                          <div class="mdl-card__menu">
+                              <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+                                  <i class="material-icons">share</i>
+                              </button>
+                          </div>
+                      </div>
+                  </div>
+
+                  <div class="mdl-cell mdl-cell--6-col">
+                      <!-- week old horoscope card -->
+                      <div class="year-card horoscope-card mdl-card mdl-shadow--2dp">
+                          <div class="mdl-card__title">
+                              <h2 class="mdl-card__title-text">Six months ago:</h2>
+                          </div>
+                          <div class="mdl-card__supporting-text">
+                              <!-- some kind of loading animation -->
+                              <div id="p_6month" class="mdl-spinner mdl-js-spinner mdl-spinner--single-color is-active center-spinner"></div>
+                              <!-- actual text -->
+                              <p></p>
+                          </div>
+                          <div class="mdl-card__menu">
+                              <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+                                  <i class="material-icons">share</i>
+                              </button>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="mdl-cell mdl-cell--6-col">
+                      <!-- month old horoscope card -->
+                      <div class="decade-card horoscope-card mdl-card mdl-shadow--2dp">
+                          <div class="mdl-card__title">
+                              <h2 class="mdl-card__title-text">A year ago:</h2>
+                          </div>
+                          <div class="mdl-card__supporting-text">
+                              <!-- some kind of loading animation -->
+                              <div id="p_year" class="mdl-spinner mdl-js-spinner mdl-spinner--single-color is-active center-spinner"></div>
+                              <!-- actual text goes here -->
+                              <p></p>
+                          </div>
+                          <div class="mdl-card__menu">
+                              <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+                                  <i class="material-icons">share</i>
+                              </button>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+            </div>
+            <div class="mdl-tabs__panel" id="starsign-panel">
+              <div class="mdl-grid">
+                <div class="mdl-cell mdl-cell--4-col">
+                  <table class="sign-info-list mdl-data-table mdl-js-data-table">
+                    <tbody>
+                      <tr>
+                        <td class="mdl-data-table__cell--non-numeric">
+                          <i class="material-icons mdl-list__item-icon">star</i>
+                        </td>
+                        <td class="mdl-data-table__cell--non-numeric">
+                          <strong>Sign:</strong>
+                        </td>
+                        <td class="mdl-data-table__cell--non-numeric">
+                          <span class="starsign-name "></span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="mdl-data-table__cell--non-numeric">
+                          <i class="material-icons mdl-list__item-icon">brightness_low</i>
+                        </td>
+                        <td class="mdl-data-table__cell--non-numeric">
+                          <strong>Stone:</strong>
+                        </td>
+                        <td class="mdl-data-table__cell--non-numeric">
+                          <span class="starsign-stone "></span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="mdl-data-table__cell--non-numeric">
+                          <i class="material-icons mdl-list__item-icon">filter_vintage</i>
+                        </td>
+                        <td class="mdl-data-table__cell--non-numeric">
+                          <strong>Flower:</strong>
+                        </td>
+                        <td class="mdl-data-table__cell--non-numeric">
+                          <span class="starsign-flower "></span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="mdl-data-table__cell--non-numeric">
+                          <i class="material-icons mdl-list__item-icon">public</i>
+                        </td>
+                        <td class="mdl-data-table__cell--non-numeric">
+                          <strong>Planet:</strong>
+                        </td>
+                        <td class="mdl-data-table__cell--non-numeric">
+                          <span class="starsign-planet "></span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="mdl-data-table__cell--non-numeric">
+                          <i class="material-icons mdl-list__item-icon">flare</i>
+                        </td>
+                        <td class="mdl-data-table__cell--non-numeric">
+                          <strong>Colour:</strong>
+                        </td>
+                        <td class="mdl-data-table__cell--non-numeric">
+                          <span class="starsign-color "></span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="mdl-data-table__cell--non-numeric">
+                          <i class="material-icons mdl-list__item-icon element-icon">whatshot</i>
+                        </td>
+                        <td class="mdl-data-table__cell--non-numeric">
+                          <strong>Element:</strong>
+                        </td>
+                        <td class="mdl-data-table__cell--non-numeric">
+                          <span class="starsign-element "></span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
-                -->
-                <div class="mdl-mini-footer__right-section">
-                    <p>&copy; no one</p>
-                </div>
-            </footer>
+              </div>
+            </div>
+          </div>
+          <footer class="mdl-mini-footer">
+              <!--
+              <div class="mdl-mini-footer__left-section">
+              </div>
+              -->
+              <div class="mdl-mini-footer__right-section">
+                  <p>&copy; no one</p>
+              </div>
+          </footer>
         </main>
     </div>
   </body>
