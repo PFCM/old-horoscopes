@@ -1,5 +1,7 @@
 # Old horoscopes
 
+[![Build Status](https://travis-ci.org/PFCM/old-horoscopes.svg?branch=master)](https://travis-ci.org/PFCM/old-horoscopes)
+
 This is a web app which shows you some old horoscopes.
 
 Or at least, it will be.
