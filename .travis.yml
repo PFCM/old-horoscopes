@@ -15,7 +15,7 @@ script: "nosetests app/"
 
 deploy:
   provider: script
-  script: docker_push.sh
+  script: ./docker_push.sh
   on:
     branch: master
 
